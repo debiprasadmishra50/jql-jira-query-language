@@ -4,7 +4,7 @@ This is a setup of a Jira Advance Query Language
 
 ![Example Image](./example.png)
 
-This contains all the operators like
+This contains all the operators like:
 
 - AND
 - OR
