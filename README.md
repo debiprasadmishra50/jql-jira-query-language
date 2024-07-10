@@ -95,3 +95,5 @@ priority = "High" AND status = "DONE" ORDER BY id DESC
 1. Run `npm i` command
 2. Add values in `.env.example` file and rename it to `.env`
 3. Run `npm start` command
+
+Made with ❤️ by [Debi Prasad Mishra](https://debiprasadmishra.net)
