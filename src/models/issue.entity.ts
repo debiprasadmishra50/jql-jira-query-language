@@ -42,6 +42,12 @@ export class Issue {
   priority: string;
 
   /**
+   * Priority of the issue (e.g., high, medium, low).
+   */
+  @Column()
+  label: string;
+
+  /**
    * Date when the issue was resolved (nullable).
    */
   @Column({ nullable: true })

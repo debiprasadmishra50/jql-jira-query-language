@@ -60,10 +60,18 @@ export class IssueService {
     this.applyOrderBy(qb, ast.orderBy);
 
     // Log the final query for debugging
-    console.log("\n[+] QUERY:\n", qb.getQuery(), "\n");
+    console.log("\n[+] QUERY:\n", qb.getQueryAndParameters(), "\n");
 
     // Execute the query and return the results
-    const results = await qb.getMany();
+    let results: Issue[];
+
+    try {
+      results = await qb.getMany();
+      console.log("\n[+] Results", results, "\n");
+    } catch (err) {
+      console.error(err);
+    }
+
     return results;
   }
 
@@ -97,9 +105,15 @@ export class IssueService {
         // Get the SQL condition string based on the field, operator, and values
         const sqlCondition = this.getSqlCondition(field, operator, values, index);
         // Add the SQL condition to the query builder with the appropriate operator
-        qb[parentOperator === "AND" ? "andWhere" : "orWhere"](sqlCondition, {
-          [`value${index}`]: operator === "IN" ? values : values[0],
-        });
+        if (operator === "IN") {
+          qb[parentOperator === "AND" ? "andWhere" : "orWhere"](sqlCondition, {
+            [`values${index}`]: values,
+          });
+        } else {
+          qb[parentOperator === "AND" ? "andWhere" : "orWhere"](sqlCondition, {
+            [`value${index}`]: values[0],
+          });
+        }
       }
     });
   }
@@ -138,7 +152,7 @@ export class IssueService {
       case "<=":
         return `issue.${field} <= :value${index}`;
       case "IN":
-        return `issue.${field} IN (:...value${index})`;
+        return `issue.${field} IN (:...values${index})`;
       case "IS":
         return `issue.${field} IS ${values[0]}`;
       case "IS NOT":
