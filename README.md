@@ -83,6 +83,30 @@ priority = "High" AND status = "DONE" ORDER BY id DESC
  SELECT "issue"."id" AS "issue_id", "issue"."title" AS "issue_title", "issue"."description" AS "issue_description", "issue"."status" AS "issue_status", "issue"."assignee" AS "issue_assignee", "issue"."priority" AS "issue_priority", "issue"."resolved" AS "issue_resolved", "issue"."created_at" AS "issue_created_at", "issue"."updated_at" AS "issue_updated_at" FROM "issue" "issue" WHERE ("issue"."status" = :value0 OR "issue"."status" = :value2) AND ("issue"."priority" = :value0 OR "issue"."priority" = :value2) AND "issue"."assignee" = :value4 ORDER BY "issue"."created_at" DESC, "issue"."updated_at" ASC
 ```
 
+#### Example 6
+
+```jql
+status IN (Unreviewed, "In Development") AND assignee IS NOT NULL AND (priority = "High" OR priority = "Highest") AND label IN ("backend", "frontend", "urgent")
+```
+
+```SQL
+[+] JQL: status IN (Unreviewed, "In Development") AND assignee IS NOT NULL AND (priority = "High" OR priority = "Highest") AND label IN ("backend", "frontend", "urgent")
+
+[+] QUERY:
+ [
+  'SELECT "issue"."id" AS "issue_id", "issue"."title" AS "issue_title", "issue"."description" AS "issue_description", "issue"."status" AS "issue_status", "issue"."assignee" AS "issue_assignee", "issue"."priority" AS "issue_priority", "issue"."label" AS "issue_label", "issue"."resolved" AS "issue_resolved", "issue"."created_at" AS "issue_created_at", "issue"."updated_at" AS "issue_updated_at" FROM "issue" "issue" WHERE "issue"."status" IN ($1, $2) AND "issue"."assignee" IS NOT NULL AND ("issue"."priority" = $3 OR "issue"."priority" = $4) AND "issue"."label" IN ($5, $6, $7)',
+  [
+    'Unreviewed',
+    'In Development',
+    'High',
+    'Highest',
+    'backend',
+    'frontend',
+    'urgent'
+  ]
+]
+```
+
 ### Tech Stack Used
 
 1. [express js](https://expressjs.com/)
