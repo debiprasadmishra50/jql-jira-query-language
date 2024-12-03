@@ -6,6 +6,7 @@ import { JqlService } from "./jql-service";
 /**
  * Service class to handle operations related to Issues.
  */
+let globalIndex = 0
 export class IssueService {
   private _jqlService: JqlService;
   private _issueRepository: Repository<Issue>;
@@ -83,7 +84,7 @@ export class IssueService {
    */
   private buildQuery(qb: any, conditions: any[], parentOperator: string = "AND") {
     // Iterate over each condition in the conditions array
-    conditions.forEach((condition, index) => {
+    conditions.forEach((condition) => {
       // If the condition is a logical operator, update the parentOperator
       if (condition.operator === "AND" || condition.operator === "OR" || condition.operator === "NOT") {
         parentOperator = condition.operator;
@@ -103,17 +104,18 @@ export class IssueService {
           throw new Error(`Unknown operator for field: ${field}`);
         }
         // Get the SQL condition string based on the field, operator, and values
-        const sqlCondition = this.getSqlCondition(field, operator, values, index);
+        const sqlCondition = this.getSqlCondition(field, operator, values, globalIndex);
         // Add the SQL condition to the query builder with the appropriate operator
         if (operator === "IN") {
           qb[parentOperator === "AND" ? "andWhere" : "orWhere"](sqlCondition, {
-            [`values${index}`]: values,
+            [`values${globalIndex}`]: values,
           });
         } else {
           qb[parentOperator === "AND" ? "andWhere" : "orWhere"](sqlCondition, {
-            [`value${index}`]: values[0],
+            [`value${globalIndex}`]: values[0],
           });
         }
+        globalIndex++
       }
     });
   }
